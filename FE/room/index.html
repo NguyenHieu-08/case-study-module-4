@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Room List</title>
+    <link rel="stylesheet" type="text/css" href="index.css" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/thymeleaf/3.0.12.RELEASE/thymeleaf.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.ajax({
+                url: 'http://localhost:8081/api/room',
+                dataType: 'json',
+                success: function(data) {
+                    console.log(data)
+
+                    let content =
+                        '<tr>\n' +
+                        '<td>Name</td>\n' +
+                        '<td>Capacity</td>\n' +
+                        '<td>Image</td>\n' +
+                        '<td>Delete</td>\n' +
+                        '</tr>'
+
+                    for (let i = 0; i < data.length; i++) {
+                        content += getRoom(data[i])
+                    }
+                    document.getElementById('roomList').innerHTML = content
+
+                }
+            })
+        })
+
+        function getRoom(room) {
+            return (
+                `<tr><td><img class="room_image" src="${room.image_url}"/></td><td>${room.capacity}</td><td>${room.name}</td>` +
+                `<td><a class="deleteRoom" href="${room.id}">Delete</a></td></tr>`
+            )
+        }
+    </script>
+</head>
+<body>
+<h1>This is room list page</h1>
+<table id="roomList" border="1">
+    <tr>
+        <td>Name</td>
+        <td>Capacity</td>
+        <td>Image</td>
+        <td th:colspan="2">Action</td>
+    </tr>
+    <th:block th:each="room: ${rooms}">
+        <tr>
+            <td class="name-td" th:text="${room.name}"></td>
+            <td class="capacity-td" th:text="${room.capacity}"></td>
+            <td
+                    class="image_url-td"
+                    th:text="${#strings.replace(#numbers.formatCurrency(room.image_url), '.00', '')}"
+            ></td>
+            <td>
+                <button class="detailRoom" th:data="${room.getId()}">Detail</button>
+            </td>
+            <td>
+                <button class="deleteRoom" th:data="${room.getId()}">Delete</button>
+            </td>
+        </tr>
+    </th:block>
+</table>
+</body>
+</html>

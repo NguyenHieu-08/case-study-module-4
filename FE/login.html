@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+
+<head>
+
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#login1').click(function (event) {
+                let username1 = $('#username').val();
+                let password1 = $('#password').val();
+                let user = {
+                    username: username1,
+                    password: password1,
+                };
+                console.log(user);
+                $.ajax({
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    type: 'POST',
+                    data: JSON.stringify(user),
+                    url: 'http://localhost:8081/api/user/login',
+                    complete: function (xhr) {
+                        Redirect(xhr);
+                    }
+                });
+                event.preventDefault();
+            })
+        });
+
+        function Redirect(e) {
+            let username = document.getElementById("username").value;
+            let password = document.getElementById("password").value;
+            let err = document.getElementById("error");
+            if (e.status == 200) {
+                window.location.href = "/homepage.html";
+            } else {
+                // alert("sai tai khoan hoac mat khau")
+                if (username === "" && password === "") {
+                    err.innerHTML = "Vui lòng nhập username & password";
+                }
+                else if (username === "" && password !== "") {
+                    err.innerHTML = "Vui lòng nhập username";
+                }
+                else if (username !== "" && password === "") {
+                    err.innerHTML = "Vui lòng nhập password";
+                }
+                else err.innerHTML = "Sai username hoac password";
+            }
+        }
+
+        function getAccount(account) {
+            let arr = [];
+            for (let key in account) {
+                arr.push(account[key]);
+            }
+            return arr;
+        }
+    </script>
+    <!-- <link rel="stylesheet" href="css/login.css"> -->
+</head>
+
+<body>
+    <div id="login">
+        <h3 class="text-center text-white pt-5">Login form</h3>
+        <div class="container">
+            <div id="login-row" class="row justify-content-center align-items-center">
+                <div id="login-column" class="col-md-6">
+                    <div id="login-box" class="col-md-12">
+                        <form id="login-form" class="form" th:action="@{/err}" th:object="${user}" method="post">
+                            <h3 class="text-center text-info">Login</h3>
+                            <div class="form-group">
+                                <label for="username" class="text-info">Username:</label><br>
+                                <input type="text" name="username" id="username" value="" placeholder="username"
+                                    class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password" class="text-info">Password:</label><br>
+                                <input type="password" name="password" id="password" value="" placeholder="password"
+                                    class="form-control" required>
+                            </div>
+                            <div>
+                                <div>
+                                    <h6 id="error" style="color: red"></h6>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="remember-me" class="text-info">
+                                    <span>Remember me</span> <span>
+                                        <input id="remember-me" name="remember-me" type="checkbox"></span></label><br>
+                                <input type="submit" id="login1" class="btn btn-info btn-md" value="Log In">
+                            </div>
+                            <div id="register-link" class="text-right">
+                                <a th:href="@{/home}" class="text-info">Register here</a>
+                            </div>
+                        </form>
+                        <div id="loginSuccess"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

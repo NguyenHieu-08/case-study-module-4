@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Room List</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        //sư kiện nào thực hiện Ajax
+        $('#addroomBtn').click(function (event) {
+          //lay du lieu
+          let name = $('#name').val()
+          let capacity = $('#capacity').val()
+          let image_url = $('#image_url').val()
+          let newRoom = {
+            name: name,
+            capacity: capacity,
+            image_url: image_url
+          }
+          // goi ajax
+          $.ajax({
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json'
+            },
+            type: 'GET',
+            data: JSON.stringify(newRoom),
+            //tên API
+            url: '/api/rooms',
+            //xử lý khi thành công
+            success: successHandler
+          })
+
+          //chặn sự kiện mặc định của thẻ
+          event.preventDefault()
+        })
+
+        function successHandler() {
+          $.ajax({
+            type: 'GET',
+            //tên API
+            url: '/api/rooms',
+            //xử lý khi thành công
+            success: function (data) {
+              // hien thi danh sach o day
+              let content =
+                '    <tr>\n' +
+                '        <td>Name</td>\n' +
+                '        <td>Capacity</td>\n' +
+                '        <td>Image_url</td>\n' +
+                '        <td>Delete</td>\n' +
+                '    </tr>'
+              for (let i = 0; i < data.length; i++) {
+                content += getRoom(data[i])
+              }
+              document.getElementById('roomList').innerHTML = content
+              window.location.reload()
+              alert('Create/update room successfully!')
+            }
+          })
+        }
+
+        function getRoom(room) {
+          return (
+            `<tr><td >${room.name}</td><td >${room.capacity}</td><td >${room.image_url}</td>` +
+            `<td><a class="deleteRoom" href="http:localhost8081/api/room/delete/${room.id}">Delete</a></td></tr>`
+          )
+        }
+
+        //sư kiện nào thực hiện Ajax
+        $('.deleteRoom').click(function (event) {
+          //lay du lieu
+          let deleteBtn = $(this)
+          let roomId = deleteBtn.attr('data')
+          let isDeleteConfirmation = confirm(
+            'Are you sure want to delete this room?'
+          )
+
+          if (isDeleteConfirmation) {
+            // goi ajax
+            $.ajax({
+              type: 'DELETE',
+              //tên API
+              url: `http:localhost8081/api/room/delete/${roomId}`,
+              //xử lý khi thành công
+              success: function (data) {
+                deleteBtn.parent().parent().remove()
+              }
+            })
+          }
+
+          //chặn sự kiện mặc định của thẻ
+          event.preventDefault()
+        })
+
+        //sư kiện nào thực hiện Ajax
+        $('.detailRoom').click(function (event) {
+          //do du lieu vao cac o input
+          let detailBtn = $(this)
+          let roomId = detailBtn.attr('data')
+          let image_urlTd = detailBtn[0].parentNode.previousElementSibling
+          let capacityTd =
+            detailBtn[0].parentNode.previousElementSibling
+              .previousElementSibling
+          let nameTd =
+            detailBtn[0].parentNode.previousElementSibling
+              .previousElementSibling.previousElementSibling
+          let image_urlValue = image_urlTd.innerText
+          let capacityValue = capacityTd.innerText
+          let nameValue = nameTd.innerText
+
+          $('#roomId').val(roomId)
+          $('#name').val(nameValue)
+          $('#capacity').val(capacityValue)
+          $('#image_url').val(image_urlValue)
+        })
+
+        //sư kiện nào thực hiện Ajax
+        $('#editroomBtn').click(function (event) {
+          let roomId = $('#roomId').val()
+          let name = $('#name').val()
+          let capacity = $('#capacity').val()
+          let image_url = $('#image_url').val()
+          let editroom = {
+            id: roomId,
+            name: name,
+            capacity: capacity,
+            image_url: image_url
+          }
+          let isUpdateConfirmation = confirm(
+            'Are you sure want to edit this room?'
+          )
+
+          if (isUpdateConfirmation) {
+            // goi ajax
+            $.ajax({
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+              },
+              type: 'PUT',
+              data: JSON.stringify(editroom),
+              //tên API
+              url: `/api/room/edit`,
+              //xử lý khi thành công
+              success: successHandler
+            })
+          }
+
+          //chặn sự kiện mặc định của thẻ
+          event.preventDefault()
+        })
+      })
+    </script>
+  </head>
+  <body>
+    <div th:class="add-room">
+      <h1>Add/Edit room</h1>
+      <form th:class="addOrEditForm">
+        <table>
+          <input type="hidden" id="roomId" />
+          <tr>
+            <td>name:</td>
+            <td>
+              <input type="text" id="name" placeholder="Enter name" />
+            </td>
+          </tr>
+          <tr>
+            <td>capacity:</td>
+            <td><input type="text" id="capacity" placeholder="Enter capacity" /></td>
+          </tr>
+          <tr>
+            <td>image_url:</td>
+            <td><input type="text" id="image_url" placeholder="Enter image_url" /></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>
+              <input type="button" value="Add" id="addRoomBtn" />
+              <input type="button" value="Edit" id="editRoomBtn" />
+            </td>
+          </tr>
+        </table>
+      </form>
+    </div>
+
+    <h1>Room List</h1>
+    <table id="roomList" border="1">
+      <tr>
+        <td>Name</td>
+        <td>Capacity</td>
+        <td>Image</td>
+        <td th:colspan="2">Action</td>
+      </tr>
+      <th:block th:each="room: ${rooms}">
+        <tr>
+          <td class="name-td" th:text="${room.name}"></td>
+          <td class="capacity-td" th:text="${room.capacity}"></td>
+          <td
+            class="image_url-td"
+            th:text="${#strings.replace(#numbers.formatCurrency(room.image_url), '.00', '')}"
+          ></td>
+          <td>
+            <button class="detailRoom" th:data="${room.getId()}">
+              Detail
+            </button>
+          </td>
+          <td>
+            <button class="deleteRoom" th:data="${room.getId()}">
+              Delete
+            </button>
+          </td>
+        </tr>
+      </th:block>
+    </table>
+  </body>
+</html>

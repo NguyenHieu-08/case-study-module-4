@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Information</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N"
+        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/thymeleaf/3.0.12.RELEASE/thymeleaf.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <script type="text/javascript" src="js/customerInfor.js"></script>
+</head>
+<body>
+    <div id="form-customer-info">
+        <h1 id="heading-customer-info">CUSTOMER INFORMATION</h1>
+        <form id="form-customer-info" action="" method="post">
+
+            <input type="hidden" id="idCustomer">
+
+            <div class="content">
+                <label class="label-name" for="fullName">Fullname: </label>
+                <input type="text" id="fullName" placeholder="Insert your fullName" name="fullName" value="" 
+                class="form-control" required>
+            </div>
+
+            <div class="content">
+                <label class="label-name" for="dob">Date of birth: </label>
+                <input type="date" id="dob" placeholder="Insert your birthday" name="dob" value="" 
+                class="form-control" required>
+            </div>
+
+            <div class="content">
+                <label class="label-name" for="email">Email: </label>
+                <input type="email" id="email" placeholder="Insert your email" name="email" value="" 
+                class="form-control" required>
+            </div>
+
+            <div class="content">
+                <label class="label-name" for="gender">Gender: </label>
+                <select id="gender" name="gender" class="form-select" required>
+                    <option name="true" value="true">Male</option>
+                    <option name="false" value="false">Female</option>
+                </select>
+            </div>
+
+            <div class="content">
+                <label class="label-name" for="phoneNumber">Phone number: </label>
+                <input type="text" id="phoneNumber" placeholder="Insert your phone number" name="phoneNumber" value=""
+                class="form-control" required>
+            </div>
+
+            <div class="content">
+                <label class="label-name" for="citizenIdentityCard">Citizen Identity Card</label>
+                <input type="text" id="citizenIdentityCard" placeholder="Insert your citizen identity card"
+                    name="citizenIdentityCard" value="" class="form-control" required>
+            </div>
+
+            <div class="content">
+                <label class="label-name" for="specialRequirement">Special Requirement: </label><br>
+                <textarea type="text" id="specialRequirement" placeholder="Insert your special requirement"
+                    name="specialRequirement" value="" class="form-control" rows="3" required></textarea>
+            </div>
+
+            <button type="button" class="btn btn-primary" id="customerInfo" value="Finish"> Finish </button>
+        </form>
+    </div>
+
+</body>
+</html>
